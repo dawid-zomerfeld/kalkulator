@@ -5,10 +5,25 @@ public class Main {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("Wprowadź wyrażenie. Dozwolone znaki to : +, -, *, / ,(, ) oraz cyfry");
-        String expression = scan.nextLine();
+        System.out.println("Wprowadź wyrażenie. Dozwolone znaki to : +, -, *, / ,( ,) oraz cyfry. Wyrażenie musi zaczynać się od cyfry");
+        String expression;
+        boolean error = true;
+        do {
+            expression = scan.nextLine();
+
+            try {
+                Validator.valid(expression.replaceAll("\\s+", ""));
+                error = false;
+            } catch (NoAllowedCharException | NotNumberException ex) {
+                System.err.println("Nie poprawne wyrażenie!");
+                System.err.println(ex.getMessage());
+                System.err.println("Wprowadź jeszcze raz");
+            }
+        } while (error);
+
 
         System.out.println("Wprowadzono:  " + expression);
+        scan.close();
 
         String onp = convertToOnp(expression);
 
@@ -25,7 +40,7 @@ public class Main {
 
         Stack<Character> stack = new Stack<>();
         StringBuilder outExpression = new StringBuilder();
-        Character actualChar;
+        char actualChar;
 
         for (int i = 0; i < expression.length(); i++) {
 
@@ -121,6 +136,7 @@ public class Main {
 
         return "+-*/".contains(operator.toString());
     }
+
 
     private static int priorityOfChar(Character operator) {
 
